@@ -13,8 +13,10 @@ endif()
 
 set(MSCRIPT_LIB_SOURCES
     include/mscript/core/Word.hpp
+    include/mscript/frontend/Token.hpp
 
     src/mscript/core/Word.cpp
+    src/mscript/frontend/Token.cpp
 )
 
 add_library(mscript_core STATIC ${MSCRIPT_LIB_SOURCES})
