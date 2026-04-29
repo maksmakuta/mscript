@@ -75,6 +75,7 @@ namespace ms {
             m_column++;
             m_index++;
         }
+        tokens.emplace_back(Word::EndOfFile, "", m_line, m_column);
         return tokens;
     }
 

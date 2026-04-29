@@ -26,3 +26,21 @@ target_include_directories(mscript_core PUBLIC include)
 
 add_executable(mscript src/main.cpp)
 target_link_libraries(mscript PRIVATE mscript_core)
+
+include(FetchContent)
+FetchContent_Declare(
+        googletest
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG        v1.17.0
+)
+FetchContent_MakeAvailable(googletest)
+
+set(TEST_SOURCES
+        tests/test_lexer.cpp
+)
+
+add_executable(mscript_tests ${TEST_SOURCES})
+target_link_libraries(mscript_tests PRIVATE mscript_core gtest_main)
+
+include(CTest)
+add_test(NAME LexerTests COMMAND mscript_tests)

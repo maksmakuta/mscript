@@ -2,7 +2,7 @@
 
 #include "mscript/frontend/Lexer.hpp"
 
-const auto MSCRIPT_CODE = "let a = 5";
+const auto MSCRIPT_CODE = "let a \n= 5";
 
 int main() {
     auto lexer = ms::Lexer(MSCRIPT_CODE);
