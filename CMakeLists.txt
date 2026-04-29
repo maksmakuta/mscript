@@ -5,8 +5,20 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-file(GLOB_RECURSE SOURCES "src/*.cpp")
-file(GLOB_RECURSE HEADERS "include/*.hpp")
+if(MSVC)
+    add_compile_options(/W4 /WX)
+else()
+    add_compile_options(-Wall -Wextra -Wpedantic -Werror=return-type)
+endif()
 
-add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
-target_include_directories(${PROJECT_NAME} PRIVATE include)
+set(MSCRIPT_LIB_SOURCES
+    include/mscript/core/Word.hpp
+
+    src/mscript/core/Word.cpp
+)
+
+add_library(mscript_core STATIC ${MSCRIPT_LIB_SOURCES})
+target_include_directories(mscript_core PUBLIC include)
+
+add_executable(mscript src/main.cpp)
+target_link_libraries(mscript PRIVATE mscript_core)
