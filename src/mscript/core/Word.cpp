@@ -94,10 +94,6 @@ namespace ms {
                 return "DivideAssign";
             case Word::ModulusAssign:
                 return "ModulusAssign";
-            case Word::NotAssign:
-                return "NotAssign";
-            case Word::InvertAssign:
-                return "InvertAssign";
             case Word::LeftShiftAssign:
                 return "LeftShiftAssign";
             case Word::RightShiftAssign:

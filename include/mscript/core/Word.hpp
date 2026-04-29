@@ -62,9 +62,6 @@ namespace ms {
         DivideAssign,
         ModulusAssign,
 
-        NotAssign,
-        InvertAssign,
-
         LeftShiftAssign,
         RightShiftAssign,
 
