@@ -15,6 +15,7 @@ namespace ms {
         String,
         Real,
 
+        Continue,
         Function,
         Return,
         While,

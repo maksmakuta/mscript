@@ -120,7 +120,8 @@ namespace ms {
     }
 
     static auto RESERVED_WORDS = std::unordered_map<std::string_view, Word>{
-        {"function",    Word::Function  },
+        { "continue",   Word::Continue  },
+        { "function",   Word::Function  },
         { "return",     Word::Return    },
         { "while",      Word::While     },
         { "match",      Word::Match     },

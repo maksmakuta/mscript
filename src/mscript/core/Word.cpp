@@ -16,6 +16,8 @@ namespace ms {
                 return "String";
             case Word::Real:
                 return "Real";
+            case Word::Continue:
+                return "Continue";
             case Word::Function:
                 return "Function";
             case Word::Return:
