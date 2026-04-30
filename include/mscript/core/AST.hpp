@@ -26,7 +26,7 @@ namespace ms {
     };
 
     struct VariableExpr {
-        Token name;
+        std::string_view name;
     };
 
     struct BinaryExpr {
@@ -106,7 +106,7 @@ namespace ms {
     };
 
     struct LetStmt {
-        Token name;
+        std::string_view name;
         Expression initializer;
     };
 
@@ -115,36 +115,27 @@ namespace ms {
     };
 
     struct FunctionStmt {
-        Token name;
+        std::string_view name;
         std::vector<Token> params;
         std::variant<Expression, BlockStmt> body;
     };
 
     struct ReturnStmt {
-        Token keyword;
         std::optional<Expression> value;
     };
 
-    struct BreakStmt {
-        Token keyword;
-    };
-
-    struct ContinueStmt {
+    struct KeywordStmt {
         Token keyword;
     };
 
     struct WhileStmt {
         Expression condition;
         Box<Statement> body;
+        bool is_do_while;
     };
 
-    struct DoWhileStmt {
-        Box<Statement> body;
-        Expression condition;
-    };
-
-    struct ForInStmt {
-        Token iterator_name;
+    struct ForStmt {
+        std::string_view iterator_name;
         Expression iterable;
         Box<Statement> body;
     };
@@ -156,11 +147,9 @@ namespace ms {
             BlockStmt,
             FunctionStmt,
             ReturnStmt,
-            BreakStmt,
-            ContinueStmt,
+            KeywordStmt,
             WhileStmt,
-            DoWhileStmt,
-            ForInStmt
+            ForStmt
         > node;
     };
 

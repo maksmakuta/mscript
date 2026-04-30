@@ -38,6 +38,7 @@ namespace ms {
 
     std::vector<Token> Lexer::tokenize() {
         std::vector<Token> tokens;
+        tokens.reserve(256);
         while (m_index < m_input.size()) {
             const auto c = m_input[m_index];
             if (c == '\n') {
@@ -87,6 +88,7 @@ namespace ms {
             m_index++;
         }
         tokens.emplace_back(Word::EndOfFile, "EOF", m_line, m_column);
+        tokens.shrink_to_fit();
         return tokens;
     }
 
