@@ -4,9 +4,9 @@
 
 using namespace ms;
 
-void ExpectTokens(std::string_view source, const std::vector<Word>& expected_types) {
+void ExpectTokens(const std::string_view source, const std::vector<Word>& expected_types) {
     Lexer lexer(source);
-    std::vector<Token> tokens = lexer.tokenize();
+    const std::vector<Token> tokens = lexer.tokenize();
 
     ASSERT_EQ(tokens.size(), expected_types.size() + 1)
         << "Token count mismatch for source: " << source;

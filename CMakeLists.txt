@@ -12,6 +12,7 @@ else()
 endif()
 
 set(MSCRIPT_LIB_SOURCES
+    include/mscript/core/AST.hpp
     include/mscript/core/Word.hpp
     include/mscript/frontend/Token.hpp
     include/mscript/frontend/Lexer.hpp
