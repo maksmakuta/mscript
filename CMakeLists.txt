@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 4.2)
-project(mscript VERSION 0.1 LANGUAGES CXX)
+project(mscript VERSION 0.2 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -16,10 +16,12 @@ set(MSCRIPT_LIB_SOURCES
     include/mscript/core/Word.hpp
     include/mscript/frontend/Token.hpp
     include/mscript/frontend/Lexer.hpp
+    include/mscript/frontend/Parser.hpp
 
     src/mscript/core/Word.cpp
     src/mscript/frontend/Token.cpp
     src/mscript/frontend/Lexer.cpp
+    src/mscript/frontend/Parser.cpp
 )
 
 add_library(mscript_core STATIC ${MSCRIPT_LIB_SOURCES})
