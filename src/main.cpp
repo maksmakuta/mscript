@@ -39,6 +39,7 @@ int main(const int argc, const char** argv) {
     if (argc < 2) {
         std::string code;
         while (true) {
+            std::cout << "> ";
             std::getline(std::cin, code);
             if (code == "exit" || code == "quit" || code == "/q" || code == "/e") {
                 break;

@@ -86,7 +86,7 @@ namespace ms {
             m_column++;
             m_index++;
         }
-        tokens.emplace_back(Word::EndOfFile, "", m_line, m_column);
+        tokens.emplace_back(Word::EndOfFile, "EOF", m_line, m_column);
         return tokens;
     }
 
