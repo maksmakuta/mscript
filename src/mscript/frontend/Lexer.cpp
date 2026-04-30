@@ -68,6 +68,17 @@ namespace ms {
                 continue;
             }
             if (isOperator(c)) {
+                if (c == '/') {
+                    if (m_index + 1 < m_input.size() && m_input[m_index + 1] == '/') {
+                        m_column++;
+                        m_index++;
+                        while (m_index < m_input.size() && m_input[m_index] != '\n') {
+                            m_column++;
+                            m_index++;
+                        }
+                        continue;
+                    }
+                }
                 tokens.push_back(lexOperator());
                 continue;
             }

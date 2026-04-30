@@ -54,3 +54,30 @@ TEST(LexerTest, TracksLineAndColumnAccurately) {
     EXPECT_EQ(tokens[1].line, 2);
     EXPECT_EQ(tokens[1].column, 1);
 }
+
+TEST(LexerTest, ParsesWithoutSpaces) {
+    ExpectTokens("let a=b+c*(10..20)", {
+        Word::Let, Word::Identifier, Word::Assign, Word::Identifier,
+        Word::Plus, Word::Identifier, Word::Multiply, Word::LeftParen,
+        Word::Integer, Word::Range, Word::Integer, Word::RightParen
+    });
+}
+
+TEST(LexerTest, ParsesStringsWithEscapeCharacters) {
+    ExpectTokens(R"("He said \"Hello\"")", {
+        Word::String
+    });
+}
+
+TEST(LexerTest, ParsesComplexIdentifiers) {
+    ExpectTokens("let _private_var123 = null", {
+        Word::Let, Word::Identifier, Word::Assign, Word::Null
+    });
+}
+
+TEST(LexerTest, IgnoresComments) {
+    ExpectTokens("let a = 5 // this is a comment\nlet b = 10", {
+        Word::Let, Word::Identifier, Word::Assign, Word::Integer,
+        Word::Let, Word::Identifier, Word::Assign, Word::Integer
+    });
+}
