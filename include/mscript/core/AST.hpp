@@ -46,13 +46,13 @@ namespace ms {
 
     struct IfExpr {
         Box<Expression> condition;
-        Box<Expression> thenBranch;
-        Box<Expression> elseBranch;
+        Box<Statement> thenBranch;
+        Box<Statement> elseBranch;
     };
 
     struct CallExpr {
         Box<Expression> callee;
-        std::vector<Expression> arguments;
+        std::vector<Box<Expression>> arguments;
     };
 
     struct ArrayExpr {
@@ -65,7 +65,7 @@ namespace ms {
 
     struct MatchCase {
         std::optional<Box<Expression>> pattern;
-        Box<Expression> body;
+        Box<Statement> body;
     };
 
     struct MatchExpr {
@@ -94,6 +94,12 @@ namespace ms {
         Box<Expression> index;
     };
 
+    struct RangeExpr {
+        Box<Expression> from;
+        Box<Expression> to;
+        std::optional<Box<Expression>> step;
+    };
+
     struct Expression {
         std::variant<
             LiteralExpr,
@@ -109,31 +115,32 @@ namespace ms {
             AssignExpr,
             LambdaExpr,
             GetExpr,
-            IndexExpr
+            IndexExpr,
+            RangeExpr
         > node;
     };
 
     struct ExpressionStmt {
-        Expression expression;
+        Box<Expression> expression;
     };
 
     struct LetStmt {
         std::string_view name;
-        Expression initializer;
+        Box<Expression> initializer;
     };
 
     struct BlockStmt {
-        std::vector<Statement> statements;
+        std::vector<Box<Statement>> statements;
     };
 
     struct FunctionStmt {
         std::string_view name;
         std::vector<Token> params;
-        std::variant<Expression, BlockStmt> body;
+        std::vector<Box<Statement>> body;
     };
 
     struct ReturnStmt {
-        std::optional<Expression> value;
+        std::optional<Box<Expression>> value;
     };
 
     struct KeywordStmt {
@@ -141,14 +148,14 @@ namespace ms {
     };
 
     struct WhileStmt {
-        Expression condition;
+        Box<Expression> condition;
         Box<Statement> body;
         bool is_do_while;
     };
 
     struct ForStmt {
         std::string_view iterator_name;
-        Expression iterable;
+        Box<Expression> iterable;
         Box<Statement> body;
     };
 

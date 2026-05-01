@@ -6,9 +6,7 @@ function sumOf(items){
     return sum
 }
 
-function avg(items){
-    return sumOf(items) / 2
-}
+function avg(items) = sumOf(items) / 2
 
 let array = [1,2,9]
 
