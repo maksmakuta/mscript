@@ -74,7 +74,7 @@ namespace ms {
     };
 
     struct AssignExpr {
-        Token name;
+        Box<Expression> name;
         Token op;
         Box<Expression> value;
     };
@@ -82,6 +82,16 @@ namespace ms {
     struct LambdaExpr {
         std::vector<Token> params;
         std::variant<Box<Expression>, Box<Statement>> body;
+    };
+
+    struct GetExpr {
+        Box<Expression> callee;
+        std::string_view name;
+    };
+
+    struct IndexExpr {
+        Box<Expression> callee;
+        Box<Expression> index;
     };
 
     struct Expression {
@@ -97,7 +107,9 @@ namespace ms {
             DictExpr,
             MatchExpr,
             AssignExpr,
-            LambdaExpr
+            LambdaExpr,
+            GetExpr,
+            IndexExpr
         > node;
     };
 
