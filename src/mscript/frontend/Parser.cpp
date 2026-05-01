@@ -61,6 +61,10 @@ namespace ms {
         if (match({Word::Do}))        return parseDoWhile();
         if (match({Word::Return}))    return parseReturn();
 
+        if (match({Word::LeftBrace})) {
+            return parseBlock();
+        }
+
         if (match({Word::Break, Word::Continue}))
             return make_box<Statement>( KeywordStmt{advance()} );
 
@@ -187,6 +191,15 @@ namespace ms {
         }
 
         return make_box<Statement>( ExpressionStmt{ parseExpression() });
+    }
+
+    Box<Statement> Parser::parseBlock() {
+        std::vector<Box<Statement>> statements;
+        while (!isAtEnd() && peek().word != Word::RightBrace) {
+            statements.push_back(parseStatement());
+        }
+        consume(Word::RightBrace, "Expected '}' after block.");
+        return make_box<Statement>(BlockStmt{std::move(statements)});
     }
 
     Box<Expression> Parser::parseMatch() {
@@ -425,11 +438,10 @@ namespace ms {
         Box<Expression> expr = parseTerm();
         if (match({Word::Range})) {
             Box<Expression> to = parseTerm();
-            Box<Expression> step = nullptr;
             if (match({Word::Colon})) {
-                step = parseTerm();
+                return make_box<Expression>(RangeExpr{std::move(expr), std::move(to), parseTerm()});
             }
-            return make_box<Expression>(RangeExpr{std::move(expr), std::move(to), std::move(step)});
+            return make_box<Expression>(RangeExpr{std::move(expr), std::move(to), nullptr});
         }
         return expr;
     }

@@ -59,6 +59,7 @@ namespace ms {
 
         Box<Expression> finishCall(Box<Expression> callee);
         Box<Statement> parseMatchBody();
+        Box<Statement> parseBlock();
 
         std::vector<Token> m_tokens;
         ErrorCallback m_callback;

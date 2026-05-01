@@ -97,7 +97,7 @@ namespace ms {
     struct RangeExpr {
         Box<Expression> from;
         Box<Expression> to;
-        std::optional<Box<Expression>> step;
+        Box<Expression> step;
     };
 
     struct Expression {
