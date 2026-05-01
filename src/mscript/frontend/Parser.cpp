@@ -116,7 +116,7 @@ namespace ms {
         }
 
         return make_box<Statement>(LetStmt{
-            std::string(nameToken->value),
+            nameToken->value,
             parseExpression()
         });
     }
@@ -418,7 +418,10 @@ namespace ms {
     }
 
     Box<Expression> Parser::parsePrimary() {
-        if (match({Word::Integer, Word::Real, Word::String, Word::True, Word::False})) {
+        if (match({Word::LeftBracket})) return parseArray();
+        if (match({Word::LeftBrace}))   return parseDict();
+
+        if (match({Word::Integer, Word::Real, Word::String, Word::True, Word::False, Word::Null})) {
             return make_box<Expression>(LiteralExpr{previous()});
         }
         if (match({Word::Identifier})) {
@@ -444,6 +447,38 @@ namespace ms {
             return make_box<Expression>(RangeExpr{std::move(expr), std::move(to), nullptr});
         }
         return expr;
+    }
+
+    Box<Expression> Parser::parseArray() {
+        std::vector<Box<Expression>> elements;
+
+        if (peek().word != Word::RightBracket) {
+            do {
+                elements.push_back(parseExpression());
+            } while (match({Word::Comma}));
+        }
+
+        consume(Word::RightBracket, "Expected ']' after array elements.");
+
+        return make_box<Expression>(ArrayExpr{std::move(elements)});
+    }
+
+    Box<Expression> Parser::parseDict() {
+        std::vector<std::pair<Box<Expression>, Box<Expression>>> properties;
+
+        if (peek().word != Word::RightBrace) {
+            do {
+                Box<Expression> key = parseExpression();
+                consume(Word::Colon, "Expected ':' after dictionary key.");
+                Box<Expression> value = parseExpression();
+
+                properties.emplace_back(std::move(key), std::move(value));
+            } while (match({Word::Comma}));
+        }
+
+        consume(Word::RightBrace, "Expected '}' after dictionary elements.");
+
+        return make_box<Expression>(DictExpr{std::move(properties)});
     }
 
 }

@@ -29,21 +29,14 @@ std::expected<std::string, ErrorCode> readFile(const std::string& path) {
     return std::unexpected{ ErrorCode::FileNotFound };
 }
 
-class ASTPrinter {
-public:
-    void print(const std::vector<ms::Box<ms::Statement>>& program) {
-        for (const auto& stmt : program) {
-            printStatement(*stmt, 0);
-        }
-    }
-
-private:
-    void indent(int depth) {
+    static void indent(const int depth) {
         for (int i = 0; i < depth; ++i) std::cout << "  ";
     }
 
-    void printStatement(const ms::Statement& stmt, int depth) {
-        std::visit([this, depth](auto&& arg) {
+    void printExpression(const ms::Expression& expr, int depth);
+
+    void printStatement(const ms::Statement& stmt, const int depth) {
+        std::visit([depth](auto&& arg) {
             using T = std::decay_t<decltype(arg)>;
             indent(depth);
 
@@ -86,7 +79,7 @@ private:
     }
 
     void printExpression(const ms::Expression& expr, int depth) {
-        std::visit([this, depth](auto&& arg) {
+        std::visit([depth](auto&& arg) {
             using T = std::decay_t<decltype(arg)>;
             indent(depth);
 
@@ -144,9 +137,23 @@ private:
                 printExpression(*arg.to, depth + 1);
                 if (arg.step) printExpression(*arg.step, depth + 1);
             }
+            else if constexpr (std::is_same_v<T, ms::ArrayExpr>) {
+                std::cout << "ArrayExpr:\n";
+                for (const auto& el : arg.elements) {
+                    printExpression(*el, depth + 1);
+                }
+            }
+            else if constexpr (std::is_same_v<T, ms::DictExpr>) {
+                std::cout << "DictExpr:\n";
+                for (const auto& [key, val] : arg.properties) {
+                    indent(depth + 1); std::cout << "Key:\n";
+                    printExpression(*key, depth + 2);
+                    indent(depth + 1); std::cout << "Value:\n";
+                    printExpression(*val, depth + 2);
+                }
+            }
         }, expr.node);
     }
-};
 
 void interpret(const std::string_view& code) {
     auto lexer = ms::Lexer(code);
@@ -157,8 +164,9 @@ void interpret(const std::string_view& code) {
 
     auto parser = ms::Parser(tokens, [](const ms::ParserError&) {});
     auto program = parser.getAST();
-    ASTPrinter printer;
-    printer.print(program);
+    for (const auto& statement : program) {
+        printStatement(*statement, 0);
+    }
 }
 
 int main(const int argc, const char** argv) {

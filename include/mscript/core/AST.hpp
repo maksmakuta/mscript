@@ -56,11 +56,11 @@ namespace ms {
     };
 
     struct ArrayExpr {
-        std::vector<Expression> elements;
+        std::vector<Box<Expression>> elements;
     };
 
     struct DictExpr {
-        std::vector<std::pair<Expression, Expression>> properties;
+        std::vector<std::pair<Box<Expression>, Box<Expression>>> properties;
     };
 
     struct MatchCase {

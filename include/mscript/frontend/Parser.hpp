@@ -61,6 +61,9 @@ namespace ms {
         Box<Statement> parseMatchBody();
         Box<Statement> parseBlock();
 
+        Box<Expression> parseArray();
+        Box<Expression> parseDict();
+
         std::vector<Token> m_tokens;
         ErrorCallback m_callback;
         std::size_t m_index;
