@@ -5,6 +5,12 @@
 #include "mscript/backend/NativeFunctions.hpp"
 
 namespace ms {
+
+    struct ReturnException : std::exception {
+        Value value;
+        explicit ReturnException(Value v) : value(std::move(v)) {}
+    };
+
     Interpreter::Interpreter() : m_environment(std::make_shared<Environment>()) {
         setupNativeFunctions();
     }
@@ -135,11 +141,32 @@ namespace ms {
             using T = std::decay_t<decltype(arg)>;
 
             if constexpr (std::is_same_v<T, std::shared_ptr<NativeFunction>>) {
-                // Handle C++ native functions
                 return arg->fn(arguments);
             }
             else if constexpr (std::is_same_v<T, std::shared_ptr<Function>>) {
-                return std::monostate{}; // callFunction(arg, arguments);
+                const auto localEnv = std::make_shared<Environment>(m_environment);
+                const auto& params = arg->fn->params;
+
+                if (arguments.size() != params.size()) {
+                    throw std::runtime_error("Argument count mismatch.");
+                }
+
+                for (size_t i = 0; i < params.size(); ++i) {
+                    localEnv->define(std::string(params[i].value), arguments[i]);
+                }
+
+                auto previousEnv = m_environment;
+                m_environment = localEnv;
+
+                try {
+                    execute(*arg->fn->body);
+                } catch (const ReturnException& e) {
+                    m_environment = previousEnv;
+                    return e.value;
+                }
+
+                m_environment = previousEnv;
+                return std::monostate{};
             }
 
             throw std::runtime_error("Object is not callable.");

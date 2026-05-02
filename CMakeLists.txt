@@ -17,6 +17,7 @@ set(MSCRIPT_LIB_SOURCES
     include/mscript/frontend/Token.hpp
     include/mscript/frontend/Lexer.hpp
     include/mscript/frontend/Parser.hpp
+    include/mscript/frontend/Printer.hpp
     include/mscript/backend/Environment.hpp
     include/mscript/backend/Interpreter.hpp
     include/mscript/backend/Value.hpp
@@ -26,6 +27,7 @@ set(MSCRIPT_LIB_SOURCES
     src/mscript/frontend/Token.cpp
     src/mscript/frontend/Lexer.cpp
     src/mscript/frontend/Parser.cpp
+    src/mscript/frontend/Printer.cpp
     src/mscript/backend/Environment.cpp
     src/mscript/backend/Interpreter.cpp
     src/mscript/backend/Value.cpp

@@ -107,7 +107,17 @@ namespace ms {
             return nullptr;
         }
 
-        return make_box<Statement>(FunctionStmt{name, std::move(parameters), std::move(body)});
+        return make_box<Statement>(
+            FunctionStmt{
+                name,
+                std::move(parameters),
+                make_box<Statement>(
+                    BlockStmt{
+                        std::move(body)
+                    }
+                )
+            }
+        );
     }
 
     Box<Statement> Parser::parseVariable() {

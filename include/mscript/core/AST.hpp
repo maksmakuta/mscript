@@ -136,7 +136,7 @@ namespace ms {
     struct FunctionStmt {
         std::string_view name;
         std::vector<Token> params;
-        std::vector<Box<Statement>> body;
+        Box<Statement> body;
     };
 
     struct ReturnStmt {
