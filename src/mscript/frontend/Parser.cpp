@@ -33,14 +33,19 @@ namespace ms {
         return previous();
     }
 
-    bool Parser::match(const std::vector<Word>& types) {
-        return std::ranges::any_of(types,[this](const Word& word) {
-            if (!isAtEnd() && peek().word == word) {
+    bool Parser::match(std::initializer_list<Word> types) {
+        return std::ranges::any_of(types, [this](const Word type) {
+            if (check(type)) {
                 advance();
                 return true;
             }
             return false;
-        });
+         });
+    }
+
+    bool Parser::check(const Word type) const {
+        if (isAtEnd()) return false;
+        return peek().word == type;
     }
 
     std::optional<Token> Parser::consume(const Word word, std::string error) {
@@ -66,7 +71,7 @@ namespace ms {
         }
 
         if (match({Word::Break, Word::Continue}))
-            return make_box<Statement>( KeywordStmt{advance()} );
+            return make_box<Statement>( KeywordStmt{previous()} );
 
         return make_box<Statement>( ExpressionStmt{parseExpression()} );
     }
@@ -432,8 +437,6 @@ namespace ms {
             consume(Word::RightParen, "Expected ')' after grouping expression.");
             return make_box<Expression>(GroupingExpr{std::move(expr)});
         }
-
-        consume(Word::Identifier, "Expected expression.");
         return {};
     }
 

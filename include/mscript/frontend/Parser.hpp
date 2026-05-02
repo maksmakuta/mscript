@@ -26,9 +26,10 @@ namespace ms {
         [[nodiscard]] const Token& peek() const;
         [[nodiscard]] const Token& previous() const;
         [[nodiscard]] bool isAtEnd() const;
+        [[nodiscard]] bool check(Word type) const;
 
         Token advance();
-        bool match(const std::vector<Word>& types);
+        bool match(std::initializer_list<Word> types);
         std::optional<Token> consume(Word word, std::string error);
 
         Box<Statement> parseStatement();
