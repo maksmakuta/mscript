@@ -20,6 +20,7 @@ set(MSCRIPT_LIB_SOURCES
     include/mscript/backend/Environment.hpp
     include/mscript/backend/Interpreter.hpp
     include/mscript/backend/Value.hpp
+    include/mscript/backend/NativeFunctions.hpp
 
     src/mscript/core/Word.cpp
     src/mscript/frontend/Token.cpp
@@ -27,6 +28,8 @@ set(MSCRIPT_LIB_SOURCES
     src/mscript/frontend/Parser.cpp
     src/mscript/backend/Environment.cpp
     src/mscript/backend/Interpreter.cpp
+    src/mscript/backend/Value.cpp
+    src/mscript/backend/NativeFunctions.cpp
 )
 
 add_library(mscript_core STATIC ${MSCRIPT_LIB_SOURCES})

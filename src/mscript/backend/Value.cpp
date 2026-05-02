@@ -54,9 +54,7 @@ namespace ms {
                 return "null";
             else if constexpr (std::is_same_v<Decayed, bool>)
                 return value ? "true" : "false";
-            else if constexpr (std::is_same_v<Decayed, int64_t>)
-                return std::to_string(value);
-            else if constexpr (std::is_same_v<Decayed, double>)
+            else if constexpr (std::is_same_v<Decayed, int64_t> || std::is_same_v<Decayed, double>)
                 return std::to_string(value);
             else if constexpr (std::is_same_v<Decayed, std::string>)
                 return value;

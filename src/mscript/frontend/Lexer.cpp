@@ -47,7 +47,7 @@ namespace ms {
                 m_index++;
                 continue;
             }
-            if ( c == '\r' || c == ' ' || c == '\t') {
+            if (std::isspace(c) || std::iscntrl(c)) {
                 m_column++;
                 m_index++;
                 continue;
@@ -155,12 +155,12 @@ namespace ms {
     }
 
     Token Lexer::lexCharacter() {
-        const auto begin = m_index;
         const auto column = m_column;
         if (m_input[m_index] == '\'') {
             m_column++;
             m_index++;
         }
+        const auto begin = m_index;
         while (m_index < m_input.size() && m_input[m_index] != '\'') {
             m_column++;
             m_index++;
@@ -171,19 +171,19 @@ namespace ms {
         }
         return Token{
              Word::Character,
-            m_input.substr(begin, m_index - begin),
+            m_input.substr(begin, m_index - begin - 1),
             m_line,
             column
         };
     }
 
     Token Lexer::lexString() {
-        const auto begin = m_index;
         const auto column = m_column;
         if (m_input[m_index] == '"') {
             m_column++;
             m_index++;
         }
+        const auto begin = m_index;
         while (m_index < m_input.size() && m_input[m_index] != '"') {
             if (m_input[m_index] == '\\') {
                 m_column++;
@@ -198,7 +198,7 @@ namespace ms {
         }
         return Token{
             Word::String,
-           m_input.substr(begin, m_index - begin),
+           m_input.substr(begin, m_index - begin - 1),
            m_line,
            column
        };
