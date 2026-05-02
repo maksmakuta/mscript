@@ -33,15 +33,21 @@ namespace ms {
         Values values;
     };
 
+    using DictKey = std::variant<
+        bool,
+        int64_t,
+        std::string
+    >;
+
     struct Dict {
-        std::map<Value,Value> values;
+        std::map<DictKey,Value> values;
     };
 
     struct Function {
         std::function<Value(Values)> native_fn;
         const FunctionStmt* fn = nullptr;
 
-        bool isNative() const {
+        [[nodiscard]] bool isNative() const {
             return !!native_fn;
         }
     };
