@@ -26,7 +26,7 @@ namespace ms {
 
         Value evaluate(const Expression &expr);
         Value evaluateExpression(const LiteralExpr&);
-        Value evaluateExpression(const VariableExpr&);
+        Value evaluateExpression(const VariableExpr&) const;
         Value evaluateExpression(const BinaryExpr&);
         Value evaluateExpression(const UnaryExpr&);
         Value evaluateExpression(const GroupingExpr&);

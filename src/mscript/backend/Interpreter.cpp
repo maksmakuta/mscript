@@ -42,8 +42,10 @@ namespace ms {
         evaluate(*expr.expression);
     }
 
-    void Interpreter::executeStatement(const LetStmt&) {
 
+    void Interpreter::executeStatement(const LetStmt& let) {
+        const auto value = evaluate(*let.initializer);
+        m_environment->define(std::string(let.name), value);
     }
 
     void Interpreter::executeStatement(const BlockStmt&) {
@@ -74,12 +76,35 @@ namespace ms {
         return std::visit([this](auto&& arg) -> Value { return evaluateExpression(arg); }, expr.node);
     }
 
-    Value Interpreter::evaluateExpression(const LiteralExpr&) {
-        return Value{};
+    Value Interpreter::evaluateExpression(const LiteralExpr& literal) {
+        switch (literal.value.word) {
+            case Word::Null:
+                return std::monostate{};
+            case Word::True:
+                return Value{true};
+            case Word::False:
+                return Value{false};
+            case Word::Integer: {
+                int64_t value;
+                const auto data = literal.value.value;
+                std::from_chars(data.begin(), data.end(), value);
+                return Value{value};
+            }
+            case Word::Real:{
+                double value;
+                const auto data = literal.value.value;
+                std::from_chars(data.begin(), data.end(), value);
+                return Value{value};
+            }
+            case Word::String: {}
+                return Value{std::string(literal.value.value)};
+            default:
+                return Value{};
+        }
     }
 
-    Value Interpreter::evaluateExpression(const VariableExpr&) {
-        return Value{};
+    Value Interpreter::evaluateExpression(const VariableExpr& var) const {
+        return m_environment->get(std::string(var.name));
     }
 
     Value Interpreter::evaluateExpression(const BinaryExpr&) {
@@ -98,8 +123,27 @@ namespace ms {
         return Value{};
     }
 
-    Value Interpreter::evaluateExpression(const CallExpr&) {
-        return Value{};
+    Value Interpreter::evaluateExpression(const CallExpr& call) {
+        Value callee = evaluate(*call.callee);
+
+        std::vector<Value> arguments;
+        for (const auto& arg : call.arguments) {
+            arguments.push_back(evaluate(*arg));
+        }
+
+        return std::visit([this, &arguments](auto&& arg) -> Value {
+            using T = std::decay_t<decltype(arg)>;
+
+            if constexpr (std::is_same_v<T, std::shared_ptr<NativeFunction>>) {
+                // Handle C++ native functions
+                return arg->fn(arguments);
+            }
+            else if constexpr (std::is_same_v<T, std::shared_ptr<Function>>) {
+                return std::monostate{}; // callFunction(arg, arguments);
+            }
+
+            throw std::runtime_error("Object is not callable.");
+        }, callee);
     }
 
     Value Interpreter::evaluateExpression(const ArrayExpr&) {
