@@ -6,15 +6,19 @@
 #include <memory>
 #include <string>
 #include <variant>
+#include <fstream>
 #include <vector>
 
 namespace ms {
 
     struct FunctionStmt;
 
+    struct File;
+    struct Range;
     struct Array;
     struct Dict;
     struct Function;
+    struct NativeFunction;
 
     using Value = std::variant<
         std::monostate,
@@ -22,16 +26,13 @@ namespace ms {
         int64_t,
         double,
         std::string,
+        std::shared_ptr<Range>,
+        std::shared_ptr<File>,
         std::shared_ptr<Array>,
         std::shared_ptr<Dict>,
-        std::shared_ptr<Function>
+        std::shared_ptr<Function>,
+        std::shared_ptr<NativeFunction>
     >;
-
-    using Values = std::vector<Value>;
-
-    struct Array {
-        Values values;
-    };
 
     using DictKey = std::variant<
         bool,
@@ -39,17 +40,32 @@ namespace ms {
         std::string
     >;
 
+    using Values = std::vector<Value>;
+
+    struct Range {
+        Value from;
+        Value to;
+        Value step;
+    };
+
+    struct File {
+        std::fstream stream;
+    };
+
+    struct Array {
+        Values values;
+    };
+
     struct Dict {
         std::map<DictKey,Value> values;
     };
 
     struct Function {
-        std::function<Value(Values)> native_fn;
         const FunctionStmt* fn = nullptr;
+    };
 
-        [[nodiscard]] bool isNative() const {
-            return !!native_fn;
-        }
+    struct NativeFunction {
+        std::function<Value(Values)> fn;
     };
 
     template<typename T>
@@ -57,29 +73,8 @@ namespace ms {
         return std::holds_alternative<T>(v);
     }
 
-    inline std::string typeName(const Value& v) {
-        return std::visit([]<typename T>(T&& val) -> std::string {
-            using Decayed = std::decay_t<T>;
-            if constexpr (std::is_same_v<Decayed, std::monostate>)
-                return "null";
-            else if constexpr (std::is_same_v<Decayed, bool>)
-                return "bool";
-            else if constexpr (std::is_same_v<Decayed, int64_t>)
-                return "int";
-            else if constexpr (std::is_same_v<Decayed, double>)
-                return "real";
-            else if constexpr (std::is_same_v<Decayed, std::string>)
-                return "string";
-            else if constexpr (std::is_same_v<Decayed, std::shared_ptr<Array>>)
-                return "array";
-            else if constexpr (std::is_same_v<Decayed, std::shared_ptr<Dict>>)
-                return "dict";
-            else if constexpr (std::is_same_v<Decayed, std::shared_ptr<Function>>)
-                return val->isNative() ? "native function" : "function";
-            else
-                return "unknown";
-        }, v);
-    }
+    std::string getTypename(const Value& v);
+    std::string toString(const Value& v);
 
 }
 

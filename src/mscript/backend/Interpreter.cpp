@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "mscript/backend/NativeFunctions.hpp"
+
 namespace ms {
     Interpreter::Interpreter() : m_environment(std::make_shared<Environment>()) {
         setupNativeFunctions();
@@ -27,22 +29,9 @@ namespace ms {
     }
 
     void Interpreter::setupNativeFunctions() const {
-        auto printFn = std::make_shared<Function>();
-        printFn->native_fn = [](Values args) -> Value {
-            for (size_t i = 0; i < args.size(); ++i) {
-                std::visit([]<typename T>       (T&& arg) {
-                    using U = std::decay_t<T>;
-                    if constexpr (std::is_same_v<U, std::monostate>) std::cout << "null";
-                    else std::cout << arg;
-                }, args[i]);
-
-                if (i < args.size() - 1) std::cout << " ";
-            }
-            std::cout << std::endl;
-            return std::monostate{};
-        };
-
-        m_environment->define("print", printFn);
+        m_environment->define("print", std::make_shared<NativeFunction>(native_print));
+        m_environment->define("println", std::make_shared<NativeFunction>(native_println));
+        m_environment->define("type", std::make_shared<NativeFunction>(native_type));
     }
 
     void Interpreter::execute(const Statement& stmt) {
