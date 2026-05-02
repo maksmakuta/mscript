@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 
+#include "mscript/backend/Interpreter.hpp"
 #include "mscript/frontend/Lexer.hpp"
 #include "mscript/frontend/Parser.hpp"
 
@@ -167,6 +168,9 @@ void interpret(const std::string_view& code) {
     for (const auto& statement : program) {
         printStatement(*statement, 0);
     }
+
+    auto interpreter = ms::Interpreter();
+    interpreter.interpret(program);
 }
 
 int main(const int argc, const char** argv) {

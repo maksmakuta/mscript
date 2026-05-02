@@ -8,8 +8,8 @@ namespace ms {
     Parser::Parser(std::vector<Token> tokens, ErrorCallback callback)
         : m_tokens(std::move(tokens)), m_callback(std::move(callback)), m_index(0) {}
 
-    std::vector<Box<Statement>> Parser::getAST() {
-        std::vector<Box<Statement>> program;
+    Program Parser::getAST() {
+        Program program;
         while (!isAtEnd()) {
             program.push_back(parseStatement());
         }

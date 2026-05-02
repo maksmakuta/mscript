@@ -20,7 +20,7 @@ namespace ms {
     class Parser final {
     public:
         explicit Parser(std::vector<Token> tokens, ErrorCallback callback);
-        std::vector<Box<Statement>> getAST();
+        Program getAST();
 
     private:
         [[nodiscard]] const Token& peek() const;

@@ -18,6 +18,7 @@ set(MSCRIPT_LIB_SOURCES
     include/mscript/frontend/Lexer.hpp
     include/mscript/frontend/Parser.hpp
     include/mscript/backend/Environment.hpp
+    include/mscript/backend/Interpreter.hpp
     include/mscript/backend/Value.hpp
 
     src/mscript/core/Word.cpp
@@ -25,6 +26,7 @@ set(MSCRIPT_LIB_SOURCES
     src/mscript/frontend/Lexer.cpp
     src/mscript/frontend/Parser.cpp
     src/mscript/backend/Environment.cpp
+    src/mscript/backend/Interpreter.cpp
 )
 
 add_library(mscript_core STATIC ${MSCRIPT_LIB_SOURCES})

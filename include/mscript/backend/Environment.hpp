@@ -7,7 +7,7 @@
 
 namespace ms {
 
-    class Environment final : public ::std::enable_shared_from_this<Environment> {
+    class Environment final : public std::enable_shared_from_this<Environment> {
     public:
         explicit Environment(std::shared_ptr<Environment> enclosing = nullptr);
 

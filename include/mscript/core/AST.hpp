@@ -172,6 +172,8 @@ namespace ms {
         > node;
     };
 
+    using Program = std::vector<Box<Statement>>;
+
 }
 
 #endif //MSCRIPT_AST_HPP
